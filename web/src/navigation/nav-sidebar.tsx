@@ -59,8 +59,6 @@ const sideBarElementsAdmin: Array<SideBarElement> = [
   { title: "Products", to: "", icon: MdOutlineWidgets },
   { title: "Timesheet Codes", to: "", icon: MdOutlineEditCalendar },
   { title: "Job Prefixes", to: "", icon: IoHammerOutline },
-
-
 ]
 const renderElement = (item: SideBarElement) =>
   <MenuItem
