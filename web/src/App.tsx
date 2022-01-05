@@ -4,6 +4,7 @@ import { Routes, Route, Outlet } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
 import NewHome from './main-screens/home'
+import LoginPage from './main-screens/login'
 import { ResponsiveDrawer } from "./navigation/mui-nav"
 import LoadingTable from "./mui/loading-table";
 import { createTheme, PaletteMode, ThemeProvider } from "@mui/material";
@@ -42,7 +43,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<NewHome menuType={"Home"}/>} />
-          <Route path="jsheet" element={<Home menuType={"Job Sheet"}/>} />
+          <Route path="jsheet" element={<LoginPage menuType={"Job Sheet"}/>} />
           <Route path="attjsheets" element={<Home menuType={"Attached Job Sheets"}/>} />
           <Route path="jstartform" element={<Home menuType={"Job Start Form"}/>} />
           <Route path="timesheet" element={<Home menuType={"Timesheet"}/>} />

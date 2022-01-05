@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cpr_management/internal"
+	"cpr_management/internal/auth"
 	"cpr_management/internal/data_models"
 	"cpr_management/internal/database"
 	"flag"
@@ -9,8 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"io"
-	_ "net/http"
+	"log"
+	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -24,13 +26,49 @@ func main() {
 	}
 
 	r := gin.Default()
+	// r.Use(auth.UserRequired)
 	r.GET("/", hello)
 	r.POST("/login", login)
 	r.GET("/json", sampleJobJson)
 	r.GET("/count", countMe)
+	r.GET("/pipeline", pipeLine)
+	r.POST("/upload", uploadFile)
 
 	r.Run(fmt.Sprintf(":%d", *port))
 
+}
+
+func pipeLine(ctx *gin.Context) {
+	database.SetAndExpireHash()
+	cookie, err := ctx.Cookie("yep")
+	if err != nil {
+		fmt.Printf("Error: %e", err)
+	} else {
+		println(cookie)
+	}
+
+	currentTime := time.Now().Unix() + 60
+	fmt.Println(currentTime)
+	auth.RetrieveSession("testAuth")
+	ctx.JSON(http.StatusUnauthorized, gin.H{
+		"message": "Bugger off",
+	})
+}
+
+func uploadFile(ctx *gin.Context) {
+	// Multipart form
+	form, _ := ctx.MultipartForm()
+	files := form.File["uploads[]"]
+
+	for _, file := range files {
+		log.Println(file.Filename)
+		// file.Filename = "kekl.txt"
+		err := ctx.SaveUploadedFile(file, "/tmp/cpr_management/uploads/kek.txt")
+		if err != nil {
+			println("hmmmm")
+		}
+	}
+	ctx.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
 }
 
 func hello(ctx *gin.Context) {
@@ -42,28 +80,59 @@ func hello(ctx *gin.Context) {
 func login(ctx *gin.Context) {
 
 	user, pass, _ := ctx.Request.BasicAuth()
-	encodedPassword, err := database.GetUserEncodedPassword(user)
+	encodedPassword, err := database.PGetUserEncodedPassword(user)
 
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			fmt.Fprintf(os.Stderr, "User does not exist")
 		}
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "Invalid login details",
+		})
+		return
 	}
 
-	isMatch := passwordHashing.ValidatePassword(pass, encodedPassword)
+	isMatch := auth.ValidatePassword(pass, encodedPassword)
 
-	ctx.JSON(300, gin.H{
-		"match": isMatch,
-	})
+	sessionKey := "yep"
+	if isMatch {
+		sessionKey = auth.GenerateSessionKey()
+		ctx.SetCookie(
+			"sid",
+			sessionKey,
+			60*60,
+			"/",
+			"",
+			true,
+			true,
+		)
+	} else {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"msg": "Invalid login details",
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{"success": isMatch})
 }
 
 func countMe(ctx *gin.Context) {
-	x, _ := database.RIncrementCount()
+	count, _ := database.RIncrementCount()
+	sessionKey := auth.GenerateSessionKey()
+	ctx.SetCookie(
+		"sid",
+		sessionKey,
+		0,
+		"/",
+		"",
+		true,
+		true,
+	)
 	ctx.JSON(200, gin.H{
-		"count": x,
+		"count": count,
 	})
 }
+
 func sampleJobJson(ctx *gin.Context) {
 	file, err := os.Open("/home/caleb/dev/golang/cpr_management/sample-data/standard-user-jobs.json")
 

@@ -27,6 +27,7 @@ import { CgUserList } from "react-icons/cg";
 import { IoHammerOutline } from "react-icons/io5";
 import AccountMenu from "../mui/profile-button";
 import { ReactChildren } from "react";
+import { Grid } from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -100,6 +101,7 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
         }}
       >
         <Toolbar>
+
           <IconButton
             color="inherit"
             aria-label="open drawer"
