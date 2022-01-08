@@ -45,6 +45,7 @@ interface SideBarElement {
 
 const sideBarElementsLoggedIn: Array<SideBarElement> = [
   { title: "Home", to: "/", icon: MdHome },
+  { title: "Login", to: "login", icon: MdOutlineDescription },
   { title: "Job Sheet", to: "jsheet", icon: MdOutlineDescription },
   { title: "Attached Job Sheets", to: "attjsheets", icon: MdOutlineLibraryBooks },
   { title: "Job Start Form", to: "jstartform", icon: MdPostAdd },

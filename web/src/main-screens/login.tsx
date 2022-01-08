@@ -1,7 +1,11 @@
-import React, { ChangeEvent, useReducer, useState } from "react";
-import { TextField, Button, Stack, Box, Snackbar, Alert, Typography } from "@mui/material";
+import React, { ChangeEvent, useEffect, useReducer, useState } from "react";
+import { TextField, Stack, Box, Snackbar, Alert, Typography, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { LoadingButton } from '@mui/lab';
 import axios from 'axios'
+import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "../utils/auth-provider";
+import { useSnackbar } from "notistack";
 
 enum field {
   USERNAME,
@@ -29,6 +33,12 @@ enum lReducerTypes {
 }
 
 export default function LoginPage({ menuType }: {menuType: string} = {menuType: "Login"}) {
+  const [aw, toggleAw] = useState(true)
+  const [submittingLogin, toggleSubmission] = useState(false);
+  const [open, toggleOpen] = useState(false)
+  const [userLoginDetails, updateUserLoginDetails] = useState({username: "", password: ""})
+  const navigate = useNavigate()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const submitLogin = async () => {
     toggleSubmission(true)
     // Go's defer concept would be dope.
@@ -37,7 +47,8 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
       return
     }
 
-    await Promise.resolve(new Promise(resolve => setTimeout(resolve, 500)))
+    if (!aw) await Promise.resolve(new Promise(resolve => setTimeout(resolve, 1000)))
+
     let axiosOptions = {
       url: "/login",
       method: "post",
@@ -47,14 +58,16 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
 
     try {
       // @ts-ignore -- Apparently method: is not a valid part of the object. I should post an issue on GH
-      let res = await axios.request(axiosOptions)
-      console.log(res)
+      await axios.request(axiosOptions)
+      auth.signIn()
+      enqueueSnackbar("Successfully logged in", {variant: 'success'})
+      navigate("/")
     } catch (e) {
-      toggleOpen(true)
+      enqueueSnackbar('Invalid Login', {variant: 'error'})
+      // toggleOpen(true)
     } finally {
       toggleSubmission(false)
     }
-
   }
 
   const loginErrorReducer = (state: LoginErrorState, action: LoginErrorAction) => {
@@ -68,6 +81,11 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
         return {...state, password: payload};
     }
   }
+  const [userLoginErrors, dispatchUserLoginErrors] = useReducer(loginErrorReducer, {
+    username: { inError: false, helpText: "" },
+    password: { inError: false, helpText: "" }
+  })
+
   const validateFields = (): boolean => {
     let isValid = true;
     let username = { inError: false, helpText: "" }
@@ -96,14 +114,8 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
     updateUserLoginDetails({username: username, password: password})
   }
 
-  const [submittingLogin, toggleSubmission] = useState(false);
-  const [open, toggleOpen] = useState(false)
-  const [userLoginDetails, updateUserLoginDetails] = useState({username: "", password: ""})
+  const auth = useAuth();
 
-  const [userLoginErrors, dispatchUserLoginErrors] = useReducer(loginErrorReducer, {
-    username: { inError: false, helpText: "" },
-    password: { inError: false, helpText: "" }
-  })
   const vertical = 'bottom';
   const horizontal = 'right'
   return (
@@ -137,6 +149,16 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
         <LoadingButton loading={submittingLogin} onClick={submitLogin} variant="outlined">
           Login
         </LoadingButton>
+
+        <FormGroup>
+          <FormControlLabel
+            control={<Checkbox
+              value={aw}
+              onChange={() => toggleAw(!aw)}
+              inputProps={{ 'aria-label': 'controlled' }}/>}
+            label="TEST: INCREASED LOADING" />
+        </FormGroup>
+
       </Stack>
 
       <Snackbar open={open}
@@ -151,4 +173,5 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
 
     </header>
   );
+
 }

@@ -15,7 +15,8 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/auth-provider";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -26,6 +27,12 @@ export default function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigate = useNavigate();
+
+  const auth = useAuth()
+  if (!auth.cookies?.il) return <></>
+
   return (
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -39,7 +46,7 @@ export default function AccountMenu() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        onClick={handleClose}
+        // onClick={handleClose}
         PaperProps={{
           elevation: 0,
           sx: {
@@ -73,14 +80,18 @@ export default function AccountMenu() {
           <Avatar /> My account
         </MenuItem>
         <Divider />
-        <MenuItem>
+        <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
             Settings
           <Link to={'settings'} />
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => {
+          auth.signOut()
+          navigate("/login")
+          handleClose()
+        }}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

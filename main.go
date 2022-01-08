@@ -29,6 +29,7 @@ func main() {
 	// r.Use(auth.UserRequired)
 	r.GET("/", hello)
 	r.POST("/login", login)
+	r.POST("/logout", signOut)
 	r.GET("/json", sampleJobJson)
 	r.GET("/count", countMe)
 	r.GET("/pipeline", pipeLine)
@@ -106,6 +107,16 @@ func login(ctx *gin.Context) {
 			true,
 			true,
 		)
+
+		ctx.SetCookie(
+			"il",
+			"y",
+			60*60,
+			"/",
+			"",
+			false,
+			false,
+		)
 	} else {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"msg": "Invalid login details",
@@ -113,21 +124,32 @@ func login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{"success": isMatch})
+	ctx.JSON(200, gin.H{
+		"firstName":     "Caleb",
+		"username":      "caldunn",
+		"tokenValidFor": 60 * 60,
+	})
 }
 
-func countMe(ctx *gin.Context) {
-	count, _ := database.RIncrementCount()
-	sessionKey := auth.GenerateSessionKey()
+func signOut(ctx *gin.Context) {
+	cookie, _ := ctx.Cookie("sid")
+	auth.DeleteSession(cookie)
 	ctx.SetCookie(
 		"sid",
-		sessionKey,
-		0,
+		"",
+		-1,
 		"/",
 		"",
 		true,
 		true,
 	)
+	ctx.JSON(200, gin.H{
+		"success": "you have successfully logged out",
+	})
+}
+
+func countMe(ctx *gin.Context) {
+	count, _ := database.RIncrementCount()
 	ctx.JSON(200, gin.H{
 		"count": count,
 	})

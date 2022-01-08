@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { IconType } from "react-icons";
+import logo from '../logo.svg'
 
 import {
   MdCalendarToday,
@@ -26,8 +27,8 @@ import { useNavigate } from "react-router-dom";
 import { CgUserList } from "react-icons/cg";
 import { IoHammerOutline } from "react-icons/io5";
 import AccountMenu from "../mui/profile-button";
-import { ReactChildren } from "react";
-import { Grid } from "@mui/material";
+
+import { useAuth } from "../utils/auth-provider";
 
 const drawerWidth = 240;
 
@@ -49,11 +50,16 @@ const sideBarElementsLoggedIn: Array<SideBarElement> = [
 
 const sideBarElementsAdmin: Array<SideBarElement> = [
   { title: "Company Notes", to: "", icon: MdOutlineNotes },
-  { title: "Client List", to: "", icon: CgUserList },
+  { title: "Client List", to: "/clients", icon: CgUserList },
   { title: "Product Suppliers", to: "", icon: MdOutlineShoppingCart },
   { title: "Products", to: "", icon: MdOutlineWidgets },
   { title: "Timesheet Codes", to: "", icon: MdOutlineEditCalendar },
   { title: "Job Prefixes", to: "", icon: IoHammerOutline },
+]
+
+const loggedOut: Array<SideBarElement> = [
+  { title: "Login", to: "/login", icon: MdOutlineNotes },
+  { title: "Contact", to: "/contact", icon: MdOutlineNotes },
 ]
 
 export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
@@ -78,27 +84,37 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
     </ListItem>
   );
 
-  const drawer = (
-    <div>
-      <Toolbar />
-      <Divider />
-      <List> {sideBarElementsLoggedIn.map(drawerButton)} </List>
-      <Divider />
-      <List>
-        {sideBarElementsAdmin.map(drawerButton)}</List>
-    </div>
-  );
+  const auth = useAuth();
 
+  const DrawerElements = () => {
+    if (!auth.cookies?.il) return (
+      <>
+        <Toolbar />
+        <Divider />
+        <List> {loggedOut.map(drawerButton)} </List>
+        <Divider />
+      </>
+    );
+    return (
+      <div>
+        <Toolbar />
+        <Divider />
+        <List> {sideBarElementsLoggedIn.map(drawerButton)} </List>
+        <Divider />
+        <List>
+          {sideBarElementsAdmin.map(drawerButton)}</List>
+      </div>
+    );
+  }
+
+  // @ts-ignore
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
+
 
       <AppBar
         position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
 
@@ -111,9 +127,9 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
           >
             <MenuIcon />
           </IconButton>
-
+          <img src={logo} className="App-logo"  alt="logo" />
           <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1 }}>
-            CPR Employee Dashboard
+            CPR Staff Service Application
           </Typography>
 
           <AccountMenu />
@@ -139,7 +155,7 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          {drawer}
+          <DrawerElements />
         </Drawer>
 
         <Drawer
@@ -150,10 +166,10 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
           }}
           open
         >
-          {drawer}
+          <DrawerElements />
         </Drawer>
-
       </Box>
+
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}

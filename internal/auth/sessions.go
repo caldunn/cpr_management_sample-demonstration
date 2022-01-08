@@ -25,6 +25,11 @@ func RetrieveSession(sid string) (data_models.Session, error) {
 	return database.RRetrieveSession(encodeAndHash(asBytes))
 }
 
+func DeleteSession(sid string) error {
+	asBytes := []byte(sid)
+	return database.RDropSession(encodeAndHash(asBytes))
+}
+
 func encodeAndHash(randomBytes []byte) string {
 	// Hash then encode.should
 	asArray := sha256.Sum256(randomBytes)

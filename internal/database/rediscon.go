@@ -63,6 +63,14 @@ func RRetrieveSession(encodedToken string) (session data_models.Session, err err
 	return
 }
 
+func RDropSession(encodedToken string) error {
+	conn := rpool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("DEL", encodedToken)
+	return err
+}
+
 func CheckSessionKeyExistence(hashedToken string) bool {
 	conn := rpool.Get()
 	defer conn.Close()
