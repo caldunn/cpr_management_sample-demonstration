@@ -13,25 +13,37 @@ import { ProvideAuth } from "./utils/auth-provider";
 import JobSheet from "./main-screens/job-sheet";
 import AlignItemsList from "./main-screens/client-list";
 import ClientV2 from "./main-screens/client-v2";
+import create from 'zustand';
+import { persist } from "zustand/middleware";
+import { lightTheme, darkTheme } from './styling/theme'
 
-const theme = createTheme({
-  palette: {
-    // @ts-ignore
-    mode: 'dark',
-    primary: {
-      main: '#F7931D',
-    },
-    secondary: {
-      main: '#2A2A2A',
-    },
-  },
-});
+interface GlobalStore {
+  isDarkTheme: boolean;
+  title: string;
+  toggleTheme: () => void
+  setTheme: (isDark: boolean) => void
+  setTitle: (title: string) => void;
+}
+
+//@ts-ignore
+export const useStore = create<GlobalStore>(persist(
+  set => ({
+    isDarkTheme: true,
+    title: "Home",
+    toggleTheme: () => set(state => ({ isDarkTheme: !state.isDarkTheme })),
+    setTheme: (isDark: boolean) => set({ isDarkTheme: isDark }),
+    setTitle: (title: string) => set({title: title}),
+  }),
+  {
+    name: "dark-mode",
+  })
+)
 
 
 function App() {
-  const [light, setLight] = React.useState(true);
+  const isDark = useStore(state => state.isDarkTheme)
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <CssBaseline />
       <ProvideAuth>
         <RoutesWrapper />

@@ -8,15 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled, Tooltip } from "@mui/material";
 
-const TAX_RATE = 0.07;
-
-function ccyFormat(num: number) {
-  return `${num.toFixed(2)}`;
-}
-
 function createRow(client: string, site: string, desc: string, status: status) {
   let randomDateUnix = Math.floor(Math.random() * (Date.now() - (Date.now() - 1000*60*60*24*365)) ) + (Date.now() - 1000*60*60*24*365)
-  console.log(randomDateUnix)
   let date = new Date(randomDateUnix);
   let jn = Math.floor(Math.random() * (10000 - 1000) ) + 1000;
   let sh = Math.floor(Math.random() * (10000 - 1000) ) + 1000;
@@ -40,21 +33,14 @@ interface Row {
   status: status;
 }
 
-function subtotal(items: readonly Row[]) {
-  return items.map(({ jn }) => jn).reduce((sum, i) => sum + i, 0);
-}
 
 const rows: Array<Row> = [
-  createRow("me-client", "kewdale", "rat ate cable", status.ISSUED),
-  createRow("me-client", "kewdale", "rat ate cable", status.AWAITING_PARTS),
-  createRow("me-client", "kewdale", "rat ate cable", status.AWAITING_PARTS),
-  createRow("me-client", "kewdale", "rat ate cable", status.ISSUED),
-  createRow("me-client", "kewdale", "rat ate cable", status.ISSUED),
+  createRow("me-client", "kewdale", "frayed cable", status.ISSUED),
+  createRow("me-client", "kewdale", "frayed cable", status.AWAITING_PARTS),
+  createRow("me-client", "kewdale", "frayed cable", status.AWAITING_PARTS),
+  createRow("me-client", "kewdale", "frayed cable", status.ISSUED),
+  createRow("me-client", "kewdale", "frayed cable", status.ISSUED),
 ];
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 const ToolTippedCell = ({toolTip, text}: {toolTip: string, text: string}) => {
   return (
@@ -64,7 +50,7 @@ const ToolTippedCell = ({toolTip, text}: {toolTip: string, text: string}) => {
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.primary.contrastText// theme.palette.action.hover,
+    backgroundColor: theme.palette.secondary.main// theme.palette.action.hover,
   },
   // hide last border
   '&:last-child td, &:last-child th': {

@@ -1,27 +1,17 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import { Box, AppBar, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText,
+Toolbar, Typography } from '@mui/material';
+
 import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { IconType } from "react-icons";
-import logo from '../logo.svg'
+import logo from '../logo.svg';
 
 import {
   MdCalendarToday,
   MdHome,
   MdOutlineDescription, MdOutlineEditCalendar,
   MdOutlineInsertChartOutlined,
-  MdOutlineLibraryBooks, MdOutlineNotes, MdOutlineShoppingCart, MdOutlineWidgets, MdPeople,
-  MdPostAdd
+  MdOutlineLibraryBooks, MdOutlineNotes, MdOutlineShoppingCart, MdOutlineWidgets, MdPeople, MdPostAdd
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { CgUserList } from "react-icons/cg";
@@ -29,6 +19,7 @@ import { IoHammerOutline } from "react-icons/io5";
 import AccountMenu from "../mui/profile-button";
 
 import { useAuth } from "../utils/auth-provider";
+import { useStore } from "../App";
 
 const drawerWidth = 240;
 
@@ -66,6 +57,7 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const navigate = useNavigate();
+  const [title, setTitle] = useStore((state) => [state.title, state.setTitle])
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -73,14 +65,15 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
 
 
   const drawerButton = (item: SideBarElement) => (
-    <ListItem button key={item.title} onClick={() =>  {
+    <ListItem button key={item.title} onClick={() => {
+      setTitle(item.title)
       navigate(item.to);
       handleDrawerToggle();
     }}>
       <ListItemIcon>
-        <item.icon />
+        <item.icon/>
       </ListItemIcon>
-      <ListItemText primary={item.title} />
+      <ListItemText primary={item.title}/>
     </ListItem>
   );
 
@@ -89,18 +82,18 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
   const DrawerElements = () => {
     if (!auth.cookies?.il) return (
       <>
-        <Toolbar />
-        <Divider />
+        <Toolbar/>
+        <Divider/>
         <List> {loggedOut.map(drawerButton)} </List>
-        <Divider />
+        <Divider/>
       </>
     );
     return (
       <div>
-        <Toolbar />
-        <Divider />
+        <Toolbar/>
+        <Divider/>
         <List> {sideBarElementsLoggedIn.map(drawerButton)} </List>
-        <Divider />
+        <Divider/>
         <List>
           {sideBarElementsAdmin.map(drawerButton)}</List>
       </div>
@@ -109,12 +102,10 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
 
   // @ts-ignore
   return (
-    <Box sx={{ display: 'flex' }}>
-
-
+    <Box sx={{display: 'flex'}}>
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}
       >
         <Toolbar>
 
@@ -123,23 +114,23 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' }}}
+            sx={{mr: 2, display: {sm: 'none'}}}
           >
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
-          <img src={logo} className="App-logo"  alt="logo" />
-          <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1 }}>
-            CPR Staff Service Application
+          <img src={logo} className="App-logo" alt="logo"/>
+          <Typography variant="h6" noWrap component="div" sx={{flexGrow: 1}}>
+            CPR Staff Service Application - {title}
           </Typography>
 
-          <AccountMenu />
+          <AccountMenu/>
         </Toolbar>
       </AppBar>
 
 
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}}}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -151,30 +142,30 @@ export function ResponsiveDrawer(props: React.PropsWithChildren<any>) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: {xs: 'block', sm: 'none'},
+            '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
           }}
         >
-          <DrawerElements />
+          <DrawerElements/>
         </Drawer>
 
         <Drawer
           variant="persistent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: {xs: 'none', sm: 'block'},
+            '& .MuiDrawer-paper': {boxSizing: 'border-box', width: drawerWidth},
           }}
           open
         >
-          <DrawerElements />
+          <DrawerElements/>
         </Drawer>
       </Box>
 
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{flexGrow: 1, p: 3, width: {sm: `calc(100% - ${drawerWidth}px)`}}}
       >
-        <Toolbar />
+        <Toolbar/>
         <Box>
           {props.children}
         </Box>

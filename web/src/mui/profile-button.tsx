@@ -1,22 +1,27 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+import {
+  Avatar,
+  Box,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@mui/material';
 
-import Tooltip from '@mui/material/Tooltip';
+import {
+  Settings,
+  Logout,
+} from '@mui/icons-material';
 
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/auth-provider";
+import { useStore } from "../App";
+
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -113,22 +118,28 @@ export default function AccountMenu() {
 
 
 export function ColorToggleButton() {
-  const [alignment, setAlignment] = React.useState('web');
+  const [isDark, setDark] = useStore(state => [state.isDarkTheme, state.setTheme])
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
     newAlignment: string,
   ) => {
-    setAlignment(newAlignment);
+    setDark("dark" === newAlignment)
   };
 
   return (
     <ToggleButtonGroup
       color="primary"
-      value={alignment}
+      value={isDark ? 'dark' : 'light'}
       exclusive
+      onMouseDown={event => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+        event.preventDefault();
+      }}
       onChange={handleChange}
     >
+
       <ToggleButton value="light">Light</ToggleButton>
       <ToggleButton value="dark">Dark</ToggleButton>
     </ToggleButtonGroup>

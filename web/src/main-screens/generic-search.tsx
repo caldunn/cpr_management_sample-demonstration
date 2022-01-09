@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import fuzzysort from "fuzzysort";
+
 import {
   Box,
   Button,
+  ButtonGroup,
   ClickAwayListener,
   Fade,
+  FormGroup,
   Paper,
   Popper,
   TextField,
@@ -33,23 +36,26 @@ export default function GenericSearch() {
 
   return (
     <Box display={"flex"} justifyContent={"space-between"} >
-      <TextField id="data-search"
-                 label="Search"
-                 variant="outlined"
-                 disabled={false}
-                 onChange={() => console.log("Abc")}
-      />
-      <Button
-        id="demo-customized-button"
-        aria-controls={open ? 'demo-customized-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        disableElevation
-        onClick={handleClick}
-      >
-        Search
-      </Button>
+      <ButtonGroup>
+        <TextField id="data-search"
+                   sx={{maxWidth: "500px"}}
+                   label="Search"
+                   variant="outlined"
+                   disabled={false}
+                   onChange={() => console.log("Abc")}
 
+        />
+        <Button
+          id="demo-customized-button"
+          aria-controls={open ? 'demo-customized-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          disableElevation
+          onClick={handleClick}
+        >
+          Search
+        </Button>
+      </ButtonGroup>
       <Button
         id="demo-customized-button"
         aria-haspopup="true"
@@ -111,7 +117,7 @@ function CheckboxList() {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+              <ListItemText id={labelId} primary={`Search field ${value + 1}`} />
             </ListItemButton>
           </ListItem>
         );
