@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useReducer, useState } from "react";
+import React, { ChangeEvent, useReducer, useState } from "react";
 import { TextField, Stack, Box, Snackbar, Alert, Typography, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { LoadingButton } from '@mui/lab';
 import axios from 'axios'
@@ -38,7 +38,7 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
   const [open, toggleOpen] = useState(false)
   const [userLoginDetails, updateUserLoginDetails] = useState({username: "", password: ""})
   const navigate = useNavigate()
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const submitLogin = async () => {
     toggleSubmission(true)
     // Go's defer concept would be dope.
@@ -50,6 +50,7 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
     if (!aw) await Promise.resolve(new Promise(resolve => setTimeout(resolve, 1000)))
 
     let axiosOptions = {
+      // baseURL: "https://cpr-api.caleb-dunn.tech",
       url: "/login",
       method: "post",
       withCredentials: true,

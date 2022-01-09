@@ -27,6 +27,14 @@ func main() {
 
 	r := gin.Default()
 	// r.Use(auth.UserRequired)
+	r.Use(func(ctx *gin.Context) {
+		ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		if ctx.Request.Method == "OPTIONS" {
+			ctx.AbortWithStatus(204)
+			return
+		}
+		ctx.Next()
+	})
 	r.GET("/", hello)
 	r.POST("/login", login)
 	r.POST("/logout", signOut)
