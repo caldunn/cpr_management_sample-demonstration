@@ -16,6 +16,8 @@ import ClientV2 from "./main-screens/client-v2";
 import create from 'zustand';
 import { persist } from "zustand/middleware";
 import { lightTheme, darkTheme } from './styling/theme'
+import SubClient from "./sub-menus/site-editor";
+import JobMain from "./sub-menus/job-main";
 
 interface GlobalStore {
   isDarkTheme: boolean;
@@ -68,11 +70,15 @@ function RoutesWrapper() {
             <NewHome/>
           </PrivateRoute>
         }/>
-        <Route path="jsheet" element={
-          <PrivateRoute>
-            <JobSheet/>
-          </PrivateRoute>
-        }/>
+
+        <Route path="jsheet">
+          <Route index element={
+            <PrivateRoute>
+              <JobSheet/>
+            </PrivateRoute>
+          }/>
+          <Route path={":jid"} element={<JobMain />}/>
+        </Route>
 
         <Route path="login" element={
           <LoginPage menuType={"Login"}/>
@@ -85,11 +91,16 @@ function RoutesWrapper() {
         <Route path="timesheet" element={<PrivateRouteWrapper menuType={"Timesheet"}/>}/>
         <Route path="jreport" element={<PrivateRouteWrapper menuType={"Job Report"}/>}/>
         <Route path="usermaintenance" element={<PrivateRouteWrapper menuType={"User Maintenance"}/>}/>
-        <Route path="clients" element={
-          <PrivateRoute>
-            <AlignItemsList/>
-          </PrivateRoute>
-        }/>
+
+        <Route path="clients">
+          <Route index element={
+            <PrivateRoute>
+              <AlignItemsList/>
+            </PrivateRoute>
+          }/>
+          <Route path={":client"} element={<SubClient/>}/>
+        </Route>
+
         <Route path="logout" element={<PrivateRouteWrapper menuType={"Logout"}/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Route>

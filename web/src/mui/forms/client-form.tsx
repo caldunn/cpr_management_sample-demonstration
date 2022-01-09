@@ -128,27 +128,38 @@ export default function InputAdornments() {
               inputProps={{'aria-label': 'controlled'}}/>}
             label="Has client portal access"/>
         </FormGroup>
+        <Box display={"flex"} flexDirection={"row"} justifyContent={"space-between"}>
+          <Button sx={{m: 1}}
+                  id="demo-customized-button"
+                  color={"error"}
+                  aria-haspopup="true"
+                  disableElevation
+                  onClick={() => console.log('bottom-start')}
+          >
+            Cancel
+          </Button>
+
+          <Button sx={{m: 1}}
+                  id="demo-customized-button"
+                  aria-haspopup="true"
+                  disableElevation
+                  onClick={() => console.log('bottom-start')}
+          >
+            Sites
+          </Button>
+
+          <Button sx={{m: 1}}
+                  id="demo-customized-button"
+                  color={"success"}
+                  aria-haspopup="true"
+                  disableElevation
+                  onClick={() => console.log('bottom-start')}
+          >
+            Save
+          </Button>
+        </Box>
       </div>
-      <Box display={"flex"} flexDirection={"row"} justifyContent={"space-between"}>
-        <Button sx={{m: 1}}
-                id="demo-customized-button"
-                color={"error"}
-                aria-haspopup="true"
-                disableElevation
-                onClick={() => console.log('bottom-start')}
-        >
-          Cancel
-        </Button>
-        <Button sx={{m: 1}}
-                id="demo-customized-button"
-                color={"success"}
-                aria-haspopup="true"
-                disableElevation
-                onClick={() => console.log('bottom-start')}
-        >
-          Save
-        </Button>
-      </Box>
+
     </Box>
   );
 }

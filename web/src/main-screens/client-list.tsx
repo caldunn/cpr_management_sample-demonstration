@@ -10,9 +10,10 @@ import { LoadingButton } from "@mui/lab";
 import { Box, Button, ButtonBase, CardActionArea, Grid, Paper } from "@mui/material";
 import GenericSearch from "./generic-search";
 import InputAdornments from "../mui/forms/client-form";
+import { useNavigate } from "react-router-dom";
 
 function SingleAddress() {
-
+  const navigate = useNavigate();
   return (
     <CardActionArea onClick={() => console.log('I AM GLICKED')}>
     <ListItem alignItems="center">
@@ -41,7 +42,7 @@ function SingleAddress() {
             onClick={(event) => {
               event.stopPropagation();
               event.preventDefault();
-              console.log('site')
+              navigate('cpr')
             }}
           >
             Sites

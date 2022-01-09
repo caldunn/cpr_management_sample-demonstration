@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled, Tooltip } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function createRow(client: string, site: string, desc: string, status: status) {
   let randomDateUnix = Math.floor(Math.random() * (Date.now() - (Date.now() - 1000*60*60*24*365)) ) + (Date.now() - 1000*60*60*24*365)
@@ -58,7 +59,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
 export default function SpanningTable() {
+  const navigate = useNavigate();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
@@ -75,7 +78,7 @@ export default function SpanningTable() {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <StyledTableRow onClick={() => console.log(row.jn)} hover key={row.jn}>
+            <StyledTableRow onClick={() => navigate(`${row.jn}`)} hover key={row.jn}>
               <TableCell>{row.date.toDateString()}</TableCell>
               <TableCell align="right">{row.jn}</TableCell>
               <TableCell align="right">{row.sh}</TableCell>
