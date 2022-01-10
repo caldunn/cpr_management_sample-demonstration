@@ -50,7 +50,7 @@ export default function LoginPage({ menuType }: {menuType: string} = {menuType: 
     if (!aw) await Promise.resolve(new Promise(resolve => setTimeout(resolve, 1000)))
 
     let axiosOptions = {
-      // baseURL: "https://cpr-api.caleb-dunn.tech",
+      baseURL: "https://cpr-api.caleb-dunn.tech",
       url: "/login",
       method: "post",
       withCredentials: true,

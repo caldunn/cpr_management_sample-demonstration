@@ -2,14 +2,22 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"os"
+	"time"
 )
 
 var dbPool *pgxpool.Pool
 
 func init() {
-	dbPool, _ = pgxpool.Connect(context.Background(), os.Getenv("PG_CONNECTION"))
+	var err error
+	dbPool, err = pgxpool.Connect(context.Background(), os.Getenv("PG_CONNECTION"))
+	if err != nil {
+		fmt.Println("Postgres connection could not be attained.")
+		time.Sleep(5 * time.Second)
+		os.Exit(-1)
+	}
 }
 
 func PGetUserEncodedPassword(username string) (encodedPassword string, err error) {
