@@ -9,6 +9,8 @@
 \usepackage{fullpage}
 \usepackage{url}
 \usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{mdframed}
 
 % Hyperlink the headings.
 \usepackage{hyperref}
@@ -17,72 +19,32 @@
     citecolor=black,
     filecolor=black,
     linkcolor=black,
-    urlcolor=black
+    urlcolor=black,
 }
+
 
 \title{Software Proposal - CPR Service App}
 \author{ Caleb Dunn \\ ABN 28 306 998 849}
 \date{\today}
 
-
 \begin{document}
     \maketitle
-
-    \begin{center}
-        \paragraph{Draft:}
-        This document is only a draft.
-    \end{center}
-
     \pagebreak
-
-
     \tableofcontents
+
+
     \pagebreak
-
-
     \section{Purpose}\label{sec:purpose}
-
-    \paragraph{}
-    This document is to outline 2 possible solutions that I am able to offer for the \emph{CPR Service Application}.
+    \input{purpose}
 
     \pagebreak
     \section{A Security Patch to Existing System}\label{sec:a-security-patch-to-existing-system}
-    asd
+    \input{security-path}
 
-    \subsection{Current Flaws}\label{subsec:current-flaws}
-    asd
-
-    \subsection{Proposed Solution}\label{subsec:proposed-solution}
-    asd
-
-    \subsubsection{HTTPS Implementation}
-    \subsubsection{Token Based Authentication}
-    \subsubsection{SSH Reconfiguration}
-
-    \section{Complete Software Package}\label{sec:entire-software-package}
-
-    \subsection{Overview}\label{subsec:overview}
-
-    \subsection{Major Components}\label{subsec:major-components}
-    \subsubsection{GO Gin REST API}
-
-    \paragraph{GO Explained}
-    GO is a modern compiled language created by Google with the purpose of being a simple and easy to learn with a strong concurrency model.
-    This purpose fulfils CPR's requirements with its backend service as it's simplicity allows for ad-hoc future development and by nature web services
-    are concurrent in nature serving multiple users at a given time.
-
-    \paragraph{} GO Documentation: \url{https://go.dev/doc/}
-
-    \paragraph{Gin Explained}
-    Gin is a HTTP framework that abstracts away from lower level
-    Gin Documentation: \url{https://github.com/gin-gonic/gin}
-    \subsubsection{ReactJS Front End}
-    \subsubsection{Caddy Webserver}
-    \subsubsection{PostgreSQL Database}
-    \subsubsection{Redis Session Cache}
-
-    \subsection{Advantages over current system}\label{subsec:advantages-over-current-system}
-    \subsection{Advantages over implementing security in existing system}\label{subsec:advantages-over-implementing-security-in-existing-system}
+    \pagebreak
+    \section{Complete Application Package}\label{sec:entire-application-package}
+    \input{complete-application-package}
 
 
 \end{document}
+
