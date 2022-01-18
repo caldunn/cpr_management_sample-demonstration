@@ -89,7 +89,56 @@ User has an account and has already visited the website and downloaded required 
 
 \pagebreak
 \subsection{Major Components}\label{subsec:major-components}
+The application is broken into several applications that specialise at given tasks to drastically reduce development time
+and increase performance.
+This section provides a brief explanation of the technology and why it was chosen.
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{res/general_data_flow}
+    \caption{How components interact}
+    \label{fig:how-services-interact}
+\end{figure}
+
+\subsubsection{ReactJS Front End}
+\paragraph{}
+ReactJS is a JavaScript framework created and backed by Facebook that drastically simplifies and empowers the creation of Single Page Applications \emph{SPA's} in the
+web browser.
+This will be the technology that a user will interface with when using the CPR application.
+An SPA means that the page will be fully loaded once with every other action  swapping out parts of the web page instead of
+an entire page refresh/rerender.
+It is important to note that the rendering takes place on the user's device and not the server.
+
+\paragraph{Mobile First}
+ReactJS has a useful UI/Component library \textbf{\href{https://mui.com/}{(MUI)}} prioritises mobile first applications.
+This approach means that mobile devices are priority platform for development and UI's for desktop are scaled up / modified after.
+This is vital as the majority of users will be on mobile devices that have limited screen space and input options when compared
+to desktop devices.
+
+\paragraph{Data Usage Reduction}
+As the SPA renders on the client it only needs the raw data in order to create a meaningful UI with dynamic data.
+Instead of requesting an entire pre rendered job page it is possible to only request the raw job data that can be parsed
+by React to minimise user-server communication and data.
+
+\paragraph{PWA Support}
+ReactJS's SPA nature simplifies the creation of a PWA for device installation and offline first behaviour.
+Although it is not strictly a React feature it saves development time.
+
+\paragraph{Community and Third Party Libraries}
+ReactJS has an enormous and active community with lots of Facebook support meaning it is not likely to go away anytime soon.
+With the huge community there are tens of thousands of third party libraries that extend React functionalities for virtually any
+scenario.
+
+\paragraph{React Native Extension} If CPR wants a native application for mobile devices a large majority of the existing codebase
+could be used, thus reducing development time significantly.
+Having developed an enterprise application using React Native I believe it would be a suitable option if the need arises.
+
+
+\paragraph{} ReactJS Documentation: \url{https://reactjs.org/docs/getting-started.html}
+
 \subsubsection{GO Gin REST API}
+\paragraph{}
+At the core of the application is a REST API written in GO using the Gin framework.
+Traffic will go through a web server proxy like Caddy to abstract HTTPS and static file delivery.
 
 \paragraph{GO Summary}
 GO is a modern compiled language created by Google with the purpose of being simple and easy to learn with a strong concurrency model.
@@ -106,14 +155,78 @@ Gin leverages of GO's goroutines to serve each request concurrently whilst maint
 \paragraph{} Gin Documentation: \url{https://github.com/gin-gonic/gin}
 
 
-\subsubsection{ReactJS Front End}
 
-\subsubsection{Caddy Webserver}
+\subsubsection{Caddy Web Server}
+\paragraph{}
+Caddy is a new open source web server that can be used to proxy communication from the user to the GO web API alongside static
+content like images.
+What makes Caddy unique is that it automatically configures HTTPS for websites using LetsEncrypt or zeroSSL with no configuration
+needed at all.
+It is truly set and forget.
+
+\paragraph{}
+Apache httpd could be used instead of Caddy, however it would require configuration for SSL.
+
+\paragraph{} Caddy Documentation: \url{https://caddyserver.com/docs/}
+
 \subsubsection{PostgreSQL Database}
-\subsubsection{Redis Session Cache}
+PostgreSQL is an open source object-relational database that is reliable and performant.
+For an application of this scale the decision between the common database options becomes one of preference.
+I like using PostgreSQL as it comes with native support for quality of life features such as UUID's.
 
-\subsection{Advantages vs Current System}\label{subsec:advantages-vs-current-system}
+\paragraph{MySQL}
+I have noticed the current application use MySQL as its database.
+Postgres is virtually better than MySQL in every facet, from developer experience to performance.
+MySQL is a legacy product that has very specific use cases.
+
+\paragraph{GO PostgreSQL Drivers}
+There are a multitude of a PostgreSQL driver libraries available in GO meaning that development time is saved with arguably
+better performance.
+
+\paragraph{} PostgreSQL Documentation: \url{https://www.postgresql.org/docs/}
+
+\subsubsection{Redis Session Cache}
+\paragraph{}
+Redis is an in-memory database designed for quick access and caching.
+Using keys to hash and store data we can use it for user session management and authentication in a fast and resource efficient
+manner.
+Redis has the ability to set an expiry for all data types, thus allowing access tokens to have an insured lifetime which is
+extremely important with short-lived tokens.
+
+\paragraph{} In the future, it would be possible to cache other data like users jobs to avoid a round trip to the PostgreSQL
+database however, this would be overkill at this current time.
+
+\begin{figure}[h!]
+    \begin{center}
+    \fbox{%
+    \begin{minipage}{0.8\textwidth}%
+        \textcolor{gray}{Create a session instance using session-token as key} \\
+        HSET \textcolor{violet}{mykey} \textcolor{purple}{user} LC1  \textcolor{purple}{role} admin \\
+        \textcolor{gray}{Set key to expire after 60 seconds} \\
+        EXPIRE \textcolor{violet}{mykey} 60 \\
+        \textcolor{gray}{Get values in key} \\
+        HGETALL \textcolor{violet}{mykey}
+    \end{minipage}
+    }
+    \caption{Creating, storing and fetching a user session in Redis}
+    \label{fig:example-session-use}
+    \end{center}
+\end{figure}
+
+\paragraph{} Redis Documentation: \url{https://redis.io/documentation}
 
 \subsection{Advantages vs Implementing Security in Existing System}\label{subsec:advantages-vs-implementing-security-in-existing-system}
+
+\paragraph{Unforeseen Security Vulnerabilities} The complete software package includes all the security features above one is not more secure than the other.
+It is important to note however that I have not seen the existing codebase so there may be security risks that I have not seen from
+a preliminary look from the outside.
+An example of such an attack could be incorrectly validated data inputs causing a multitude of potential attack vectors such as
+SQL injection, remote code execution or cross site scripting.
+
+\paragraph{}
+Advantages can be reflected in the core requirements and their implementations explained above, but personally I feel the biggest
+advantage comes with the User Interface and User Experience improvements.
+I have supplied an informal supplementary document that highlight some proposed usability changes present in the current prototype.
+
 \clearpage
 \printglossaries

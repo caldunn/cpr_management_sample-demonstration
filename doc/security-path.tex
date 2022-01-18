@@ -26,9 +26,13 @@ Once you have found out that query parameters manage state and authentication im
     \item \emph{Role Impersonation:} If you are a standard user you can change the \emph{admin} parameter to \emph{Y} and gain admin access.
 \end{description}
 
-\begin{mdframed}
-    http://service.cprelectrical.net.au/cpr/menu?\textcolor{violet}{admin=Y}\&\textcolor{purple}{user=LC1}
-\end{mdframed}
+\begin{figure}[h!]
+    \begin{mdframed}
+        http://service.cprelectrical.net.au/cpr/menu?\textcolor{violet}{admin=Y}\&\textcolor{purple}{user=LC1}
+    \end{mdframed}
+    \caption{Query parameters in current url}
+    \label{fig:query-parameters-current}
+\end{figure}
 
 \paragraph{}
 There is also the possible for accidental abuse.
